@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib
+matplotlib.use('Agg')
 from time import time
 import matplotlib.pyplot as plt
 import pandas as pd 
@@ -122,7 +123,7 @@ for sliding in sliding_widow:
 			for optimize in optimizerArr:
 				print optimize
 				model.compile(loss='mean_squared_error' ,optimizer=optimize , metrics=['mean_squared_error'])
-				history = model.fit(trainX, trainY, epochs=1, batch_size=batch_size, verbose=2,validation_split=0.1,
+				history = model.fit(trainX, trainY, epochs=2000, batch_size=batch_size, verbose=2,validation_split=0.1,
 				 							callbacks=[EarlyStopping(monitor='loss', patience=20, verbose=1)])
 				# make predictions
 				# list all data in history
