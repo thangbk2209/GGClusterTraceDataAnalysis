@@ -28,9 +28,9 @@ scaler = MinMaxScaler(feature_range=(0, 1))
 
 RAM = df['mem_usage'].values
 CPU = df['cpu_rate'].values
-RAM_nomal = scaler.fit_transform(RAM)
-CPU_nomal = scaler.fit_transform(CPU)
 
+CPU_nomal = scaler.fit_transform(CPU)
+RAM_nomal = scaler.fit_transform(RAM)
 # create and fit the LSTM network
 sliding_widow = [2,3,4,5]
 # split into train and test sets
@@ -50,17 +50,17 @@ for sliding in sliding_widow:
 	train_size = 2880
 	test_size = length - train_size
 	batch_size_array = [8,16,32,64,128]
-	trainX, trainY = data[0:train_size], CPU_nomal[sliding:train_size+sliding]
+	trainX, trainY = data[0:train_size], RAM_nomal[sliding:train_size+sliding]
 	testX = data[train_size:length-sliding]
-	testY =  CPU[train_size+sliding:length]
+	testY =  RAM[train_size+sliding:length]
 	print 'trainX'
 	print trainX
 	print trainX[0]
 
 	# reshape input to be [samples, time steps, features]
 
-	trainX = np.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
-	testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
+	trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1], 1))
+	testX = np.reshape(testX, (testX.shape[0], testX.shape[1], 1))
 	print 'trainX reshape'
 	print trainX
 	for batch_size in batch_size_array: 
@@ -68,37 +68,37 @@ for sliding in sliding_widow:
 		print "batch_size= ", batch_size
 		# model 1 layer 4 neural
 		model1 = Sequential()
-		model1.add(LSTM(4, activation = 'relu',input_shape=(1,2*sliding)))
+		model1.add(LSTM(4, activation = 'relu',input_shape=(2*sliding, 1)))
 		model1.add(Dense(1, activation = 'relu'))
 
 		# model 2 layer 4-2 neural
 		model2 = Sequential()
-		model2.add(LSTM(4,return_sequences=True, activation = 'relu',input_shape=(1,2*sliding)))
+		model2.add(LSTM(4,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
 		model2.add(LSTM(2, activation = 'relu'))
 		model2.add(Dense(1, activation = 'relu'))
 
 		# model 2 layer 32-4 neural
 		model3 = Sequential()
-		model3.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(1,2*sliding)))
+		model3.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
 		model3.add(LSTM(4, activation = 'relu'))
 		model3.add(Dense(1, activation = 'relu'))
 
 		# model 2 layer 5122-4 neural
 		model4 = Sequential()
-		model4.add(LSTM(512,return_sequences=True, activation = 'relu',input_shape=(1,2*sliding)))
+		model4.add(LSTM(512,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
 		model4.add(LSTM(4, activation = 'relu'))
 		model4.add(Dense(1, activation = 'relu'))
 
 		# model 3 layer 32-8-2 neural
 		model5 = Sequential()
-		model5.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(1,2*sliding)))
+		model5.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
 		model5.add(LSTM(8, activation = 'relu',return_sequences=True))
 		model5.add(LSTM(2, activation = 'relu'))
 		model5.add(Dense(1, activation = 'relu'))
 
 		# model 3 layer 32-16-4 neural
 		model6 = Sequential()
-		model6.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(1,2*sliding)))
+		model6.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
 		model6.add(LSTM(16, activation = 'relu',return_sequences=True))
 		model6.add(LSTM(4, activation = 'relu'))
 		model6.add(Dense(1, activation = 'relu'))
@@ -137,7 +137,7 @@ for sliding in sliding_widow:
 				plt.xlabel('epoch')
 				plt.legend(['train', 'test'], loc='upper left')
 				# plt.show()
-				plt.savefig('results/multivariate/cpu/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
+				plt.savefig('results/multivariate/mem/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
 				testPredict = model.predict(testX)
 
 				print len(testPredict), len(testY)
@@ -152,9 +152,9 @@ for sliding in sliding_widow:
 				print('Test Score: %.6f MAE' % (testScoreMAE))
 				
 				testDf = pd.DataFrame(np.array(testPredictInverse))
-				testDf.to_csv('results/multivariate/cpu/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				testDf.to_csv('results/multivariate/mem/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
 				errorScore=[]
 				errorScore.append(testScoreRMSE)
 				errorScore.append(testScoreMAE)
 				errorDf = pd.DataFrame(np.array(errorScore))
-				errorDf.to_csv('results/multivariate/cpu/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				errorDf.to_csv('results/multivariate/mem/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
