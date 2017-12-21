@@ -20,10 +20,10 @@ def create_dataset(dataset, look_back=1):
 		dataX.append(a)
 		dataY.append(dataset[i + look_back, 0])
 	return np.array(dataX), np.array(dataY)
-sliding_window=[2,3,4,5]
+sliding_window=[4]
 # load the dataset
 # dataframe = read_csv('/home/nguyen/LSTM_GoogleTraceData/data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv', usecols=[0], engine='python', skipfooter=3)
-dataframe = read_csv('./data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv', usecols=[1], engine='python', skipfooter=3)
+dataframe = read_csv('./data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv', usecols=[0], engine='python', skipfooter=3)
 
 dataset = dataframe.values
 dataset = dataset.astype('float32')
@@ -130,7 +130,7 @@ for sliding in sliding_window:
 				plt.xlabel('epoch')
 				plt.legend(['train', 'test'], loc='upper left')
 				# plt.show()
-				plt.savefig('results/univariate/mem/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
+				plt.savefig('results/univariate/cpu/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
 				# make predictions
 				testPredict = model.predict(testX)
 				# invert predictions
@@ -147,9 +147,9 @@ for sliding in sliding_window:
 				print('Test Score: %f MAE' % (testScoreMAE))
 			
 				testDf = pd.DataFrame(np.array(testPredictInverse))
-				testDf.to_csv('results/univariate/mem/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				testDf.to_csv('results/univariate/cpu/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
 				errorScore=[]
 				errorScore.append(testScoreRMSE)
 				errorScore.append(testScoreMAE)
 				errorDf = pd.DataFrame(np.array(errorScore))
-				errorDf.to_csv('results/univariate/mem/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				errorDf.to_csv('results/univariate/cpu/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
