@@ -20,7 +20,7 @@ def create_dataset(dataset, look_back=1):
 		dataX.append(a)
 		dataY.append(dataset[i + look_back, 0])
 	return np.array(dataX), np.array(dataY)
-sliding_window=[3]
+sliding_window=[2,3,4,5]
 # load the dataset
 # dataframe = read_csv('/home/nguyen/LSTM_GoogleTraceData/data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv', usecols=[0], engine='python', skipfooter=3)
 dataframe = read_csv('./data/ICCS_sample_resource_617685_10minute.csv', usecols=[1], engine='python', skipfooter=3)
