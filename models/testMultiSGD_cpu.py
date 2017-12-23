@@ -17,7 +17,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 from keras.callbacks import LearningRateScheduler
 # learning rate schedule
 def step_decay(epoch):
-	initial_lrate = 0.1
+	initial_lrate = 0.01
 	drop = 0.5
 	epochs_drop = 1000.0
 	lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
