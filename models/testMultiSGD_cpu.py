@@ -88,7 +88,7 @@ for sliding in sliding_widow:
 		# learning schedule callback
 		lrate = LearningRateScheduler(step_decay)
 		callbacks_list = [lrate]
-		history = model.fit(trainX, trainY, epochs=100000, batch_size=batch_size, verbose=2,validation_split=0.25, callbacks=callbacks_list)
+		history = model.fit(trainX, trainY, epochs=25000, batch_size=batch_size, verbose=2,validation_split=0.25, callbacks=callbacks_list)
 		# make predictions
 		# list all data in history
 		print(history.history.keys())
