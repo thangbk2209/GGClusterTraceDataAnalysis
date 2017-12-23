@@ -10,6 +10,7 @@ from pandas import read_csv
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
+from keras import optimizers
 from keras.callbacks import TensorBoard, EarlyStopping
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error
@@ -120,12 +121,12 @@ for sliding in sliding_widow:
 
 			modelName = "model" + str(k+1)
 			print modelName
-			optimizerArr = ['adam']
+			optimizerArr = ['sgd']
 			for optimize in optimizerArr:
 				print optimize
-				model.compile(loss='mean_squared_error' ,optimizer=optimize , metrics=['mean_squared_error'])
-				history = model.fit(trainX, trainY, epochs=2000, batch_size=batch_size, verbose=2,validation_split=0.25,
-				 							callbacks=[EarlyStopping(monitor='loss', patience=20, verbose=1)])
+				sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+				model.compile(loss='mean_squared_error' ,optimizer = sgd , metrics=['mean_squared_error'])
+				history = model.fit(trainX, trainY, epochs=100000, batch_size=batch_size, verbose=2,validation_split=0.25)
 				# make predictions
 				# list all data in history
 				print(history.history.keys())
