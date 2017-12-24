@@ -70,7 +70,7 @@ def symmetrical_uncertainly(X,Y):
 # colnames=['cpu_rate','mem_usage','disk_io_time','disk_space']
 colnames = ['cpu_rate','mem_usage','disk_io_time','disk_space']
 # df = read_csv('data/Fuzzy_data_resource_JobId_6336594489_5minutes.csv', header=None, index_col=False, names=colnames)
-df = read_csv('data/sampling_617685_metric_10min_datetime_origin.csv', header=None, index_col=False, names=colnames)
+df = read_csv('data/5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', header=None, index_col=False, names=colnames)
 
 cpu_rate = df['cpu_rate'].values
 mem_usage = df['mem_usage'].values
@@ -98,4 +98,4 @@ for i in range(len(colnames)):
 print su
 # su=[[1,2,3],[2,3,4]]
 dataFuzzyDf = pd.DataFrame(np.array(su))
-dataFuzzyDf.to_csv('data/su_data10minutes.csv', index=False, header=None)
+dataFuzzyDf.to_csv('data/su_5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', index=False, header=None)
