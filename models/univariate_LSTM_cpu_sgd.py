@@ -123,7 +123,7 @@ for sliding in sliding_window:
 				plt.xlabel('epoch')
 				plt.legend(['train', 'test'], loc='upper left')
 				# plt.show()
-				plt.savefig('results/univariate/cpuFuzzy/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
+				plt.savefig('results/univariate/cpuFuzzy/testSGD/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
 				# make predictions
 				testPredict = model.predict(testX)
 				# invert predictions
@@ -140,9 +140,9 @@ for sliding in sliding_window:
 				print('Test Score: %f MAE' % (testScoreMAE))
 			
 				testDf = pd.DataFrame(np.array(testPredictInverse))
-				testDf.to_csv('results/univariate/cpuFuzzy/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				testDf.to_csv('results/univariate/cpuFuzzy/testSGD/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
 				errorScore=[]
 				errorScore.append(testScoreRMSE)
 				errorScore.append(testScoreMAE)
 				errorDf = pd.DataFrame(np.array(errorScore))
-				errorDf.to_csv('results/univariate/cpuFuzzy/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				errorDf.to_csv('results/univariate/cpuFuzzy/testSGD/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
