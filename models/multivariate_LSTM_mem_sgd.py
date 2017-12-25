@@ -27,11 +27,12 @@ dataset = df.values
 length = len(dataset)
 scaler = MinMaxScaler(feature_range=(0, 1))
 
-RAM = df['mem_usage'].values
 CPU = df['cpu_rate'].values
+RAM = df['mem_usage'].values
 
-RAM_nomal = scaler.fit_transform(RAM)
 CPU_nomal = scaler.fit_transform(CPU)
+RAM_nomal = scaler.fit_transform(RAM)
+
 
 # create and fit the LSTM network
 sliding_widow = [2,3,4,5]
@@ -52,9 +53,9 @@ for sliding in sliding_widow:
 	train_size = 2880
 	test_size = length - train_size
 	batch_size_array = [8,16,32,64,128]
-	trainX, trainY = data[0:train_size], CPU_nomal[sliding:train_size+sliding]
+	trainX, trainY = data[0:train_size], RAM_nomal[sliding:train_size+sliding]
 	testX = data[train_size:length-sliding]
-	testY =  CPU[train_size+sliding:length]
+	testY =  RAM[train_size+sliding:length]
 	print 'trainX'
 	print trainX
 	print trainX[0]
@@ -102,12 +103,6 @@ for sliding in sliding_widow:
 		model5.add(LSTM(2, activation = 'relu'))
 		model5.add(Dense(1, activation = 'relu'))
 
-		# model 3 layer 32-16-4 neural
-		# model6 = Sequential()
-		# model6.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
-		# model6.add(LSTM(16, activation = 'relu',return_sequences=True))
-		# model6.add(LSTM(4, activation = 'relu'))
-		# model6.add(Dense(1, activation = 'relu'))
 
 		for k in range(5):
 			if (k==0):
@@ -143,7 +138,7 @@ for sliding in sliding_widow:
 				plt.xlabel('epoch')
 				plt.legend(['train', 'test'], loc='upper left')
 				# plt.show()
-				plt.savefig('results/multivariate/cpuFuzzy/testSGD/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
+				plt.savefig('results/multivariate/memFuzzy/testSGD/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
 				testPredict = model.predict(testX)
 
 				print len(testPredict), len(testY)
@@ -158,9 +153,9 @@ for sliding in sliding_widow:
 				print('Test Score: %.6f MAE' % (testScoreMAE))
 				
 				testDf = pd.DataFrame(np.array(testPredictInverse))
-				testDf.to_csv('results/multivariate/cpuFuzzy/testSGD/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				testDf.to_csv('results/multivariate/memFuzzy/testSGD/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
 				errorScore=[]
 				errorScore.append(testScoreRMSE)
 				errorScore.append(testScoreMAE)
 				errorDf = pd.DataFrame(np.array(errorScore))
-				errorDf.to_csv('results/multivariate/cpuFuzzy/testSGD/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				errorDf.to_csv('results/multivariate/memFuzzy/testSGD/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
