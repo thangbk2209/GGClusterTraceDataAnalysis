@@ -53,7 +53,7 @@ for modelName in modelNameArr:
 				# ax.plrot(TestPred,label="Test")
 				plt.xlabel("TimeStamp")
 				plt.ylabel("Mem")
-				ax.text(0,0, '%s_testScore-sliding=%s-batch_size=%s: %s RMSE- %s MAE'%(modelName, sliding,batch_size, RMSE,MAE), style='italic',
+				ax.text(0,0, '%s_testScore-sliding=%s-batch_size=%s_optimise=%s: %s RMSE- %s MAE'%(modelName, sliding,batch_size,optimize, RMSE,MAE), style='italic',
 				        bbox={'facecolor':'red', 'alpha':0.5, 'pad':8})
 				plt.legend()
 				# plt.savefig('mem5.png')

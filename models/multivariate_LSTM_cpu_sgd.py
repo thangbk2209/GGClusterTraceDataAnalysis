@@ -17,7 +17,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 # Doc du lieu
 colnames = ['cpu_rate','mem_usage','disk_io_time','disk_space'] 
-df = read_csv('./data/ICCS_sample_resource_617685_10minute.csv', header=None, index_col=False, names=colnames, usecols=[0,1], engine='python')
+df = read_csv('./data/5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin', header=None, index_col=False, names=colnames, usecols=[0,1], engine='python')
 # df = read_csv('/mnt/volume/ggcluster/spark-2.1.1-bin-hadoop2.7/thangbk2209/GGClusterTraceDataAnalysis/data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv', header=None, index_col=False, names=colnames, usecols=[0,1], engine='python')
 
 dataset = df.values
@@ -86,9 +86,13 @@ for sliding in sliding_widow:
 		model3.add(Dense(1, activation = 'relu'))
 
 		# model 2 layer 5122-4 neural
+		# model4 = Sequential()
+		# model4.add(LSTM(512,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
+		# model4.add(LSTM(4, activation = 'relu'))
+		# model4.add(Dense(1, activation = 'relu'))
+		# model 2 layer 2-1
 		model4 = Sequential()
-		model4.add(LSTM(512,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
-		model4.add(LSTM(4, activation = 'relu'))
+		model4.add(LSTM(2,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
 		model4.add(Dense(1, activation = 'relu'))
 
 		# model 3 layer 32-8-2 neural
@@ -99,13 +103,13 @@ for sliding in sliding_widow:
 		model5.add(Dense(1, activation = 'relu'))
 
 		# model 3 layer 32-16-4 neural
-		model6 = Sequential()
-		model6.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
-		model6.add(LSTM(16, activation = 'relu',return_sequences=True))
-		model6.add(LSTM(4, activation = 'relu'))
-		model6.add(Dense(1, activation = 'relu'))
+		# model6 = Sequential()
+		# model6.add(LSTM(32,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
+		# model6.add(LSTM(16, activation = 'relu',return_sequences=True))
+		# model6.add(LSTM(4, activation = 'relu'))
+		# model6.add(Dense(1, activation = 'relu'))
 
-		for k in range(6):
+		for k in range(5):
 			if (k==0):
 				model = model1
 			elif (k == 1):
@@ -116,8 +120,8 @@ for sliding in sliding_widow:
 				model = model4
 			elif (k == 4):
 				model = model5
-			elif (k == 5):
-				model = model6
+			# elif (k == 5):
+			# 	model = model6
 
 			modelName = "model" + str(k+1)
 			print modelName
@@ -126,7 +130,7 @@ for sliding in sliding_widow:
 				print optimize
 				sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 				model.compile(loss='mean_squared_error' ,optimizer = sgd , metrics=['mean_squared_error'])
-				history = model.fit(trainX, trainY, epochs=100000, batch_size=batch_size, verbose=2,validation_split=0.25)
+				history = model.fit(trainX, trainY, epochs=10000, batch_size=batch_size, verbose=2,validation_split=0.25)
 				# make predictions
 				# list all data in history
 				print(history.history.keys())
@@ -139,7 +143,7 @@ for sliding in sliding_widow:
 				plt.xlabel('epoch')
 				plt.legend(['train', 'test'], loc='upper left')
 				# plt.show()
-				plt.savefig('results/multivariate/cpuFuzzy/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
+				plt.savefig('results/multivariate/cpuFuzzy/testSGD/%s/history_sliding=%s_batchsize=%s_optimize=%s.png'%(modelName,sliding,batch_size,optimize))
 				testPredict = model.predict(testX)
 
 				print len(testPredict), len(testY)
@@ -154,9 +158,9 @@ for sliding in sliding_widow:
 				print('Test Score: %.6f MAE' % (testScoreMAE))
 				
 				testDf = pd.DataFrame(np.array(testPredictInverse))
-				testDf.to_csv('results/multivariate/cpuFuzzy/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				testDf.to_csv('results/multivariate/cpuFuzzy/testSGD/%s/testPredictInverse_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
 				errorScore=[]
 				errorScore.append(testScoreRMSE)
 				errorScore.append(testScoreMAE)
 				errorDf = pd.DataFrame(np.array(errorScore))
-				errorDf.to_csv('results/multivariate/cpuFuzzy/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
+				errorDf.to_csv('results/multivariate/cpuFuzzy/testSGD/%s/error_sliding=%s_batchsize=%s_optimize=%s.csv'%(modelName,sliding,batch_size,optimize), index=False, header=None)
