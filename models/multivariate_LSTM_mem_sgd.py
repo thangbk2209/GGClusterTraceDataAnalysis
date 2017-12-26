@@ -93,7 +93,7 @@ for sliding in sliding_widow:
 		# model4.add(Dense(1, activation = 'relu'))
 		# model 2 layer 2-1
 		model4 = Sequential()
-		model4.add(LSTM(2,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
+		model4.add(LSTM(2, activation = 'relu',input_shape=(2*sliding, 1)))
 		model4.add(Dense(1, activation = 'relu'))
 
 		# model 3 layer 32-8-2 neural
