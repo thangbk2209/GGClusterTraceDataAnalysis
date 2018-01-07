@@ -6,7 +6,7 @@ import numpy as np
 batch_size_array = [8,16,32,64,128]
 modelNameArr = ['model1','model2','model3','model4','model5','model6']
 sliding_widow = [2,3,4,5]
-optimizerArr=['adam', 'SGD']
+optimizerArr=['adam']
 
 MAEerror = list()
 for modelName in modelNameArr:	
