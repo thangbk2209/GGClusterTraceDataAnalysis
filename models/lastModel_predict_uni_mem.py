@@ -57,7 +57,7 @@ for sliding in sliding_window:
 
 		# model 1 layer 4 neural
 		model = Sequential()
-		model.add(LSTM(512,return_sequences=True, activation = 'relu',input_shape=(2*sliding, 1)))
+		model.add(LSTM(512,return_sequences=True, activation = 'relu',input_shape=(sliding, 1)))
 		model.add(LSTM(4, activation = 'relu'))
 		model.add(Dense(1, activation = 'relu'))
 
