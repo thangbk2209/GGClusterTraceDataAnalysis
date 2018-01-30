@@ -9,9 +9,9 @@ colnames = ['cpu','mem','disk_io_time','disk_space']
 # colnames = ['cpu','mem','disk_io_time','disk_space'] 
 batch_size_array = [8,16,32,64,128]
 realFile = ['/home/nguyen/GGTraceAnalysis/data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv']
-modelNameArr = ['model1','model2','model3','model4','model5','model6']
+modelNameArr = ['model4']
 
-sliding_widow = [2,3,4,5]
+sliding_widow = [2]
 optimizerArr=['adam', 'SGD']
 for modelName in modelNameArr: 
 	for sliding in sliding_widow:

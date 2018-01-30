@@ -74,8 +74,8 @@ for sliding in sliding_widow:
 		model.add(LSTM(4, activation = 'relu'))
 		model.add(Dense(1, activation = 'relu'))
 
-		sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-		model.compile(loss='mean_squared_error' ,optimizer = sgd , metrics=['mean_squared_error'])
+		# sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+		model.compile(loss='mean_squared_error' ,optimizer = 'adam' , metrics=['mean_squared_error'])
 		history = model.fit(trainX, trainY, epochs=2500, batch_size=batch_size, verbose=2,validation_split=0.25,
 			callbacks=[EarlyStopping(monitor='loss', patience=20, verbose=1)])
 		# make predictions
