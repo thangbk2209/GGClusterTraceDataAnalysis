@@ -53,9 +53,9 @@ for sliding in sliding_widow:
 	train_size = 2880
 	test_size = length - train_size
 	batch_size_array = [8,16,32,64,128]
-	trainX, trainY = data[0:train_size], CPU_nomal[sliding:train_size+sliding]
+	trainX, trainY = data[0:train_size], RAM_nomal[sliding:train_size+sliding]
 	testX = data[train_size:length-sliding]
-	testY =  CPU[train_size+sliding:length]
+	testY =  RAM[train_size+sliding:length]
 	print 'trainX'
 	print trainX
 	print trainX[0]

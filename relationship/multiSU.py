@@ -63,7 +63,8 @@ def infomation_gain(X,Y):
 	return entro(X) - entroXY(X,Y)
 def symmetrical_uncertainly(X,Y):
 	return 2.0*infomation_gain(X,Y)/(entro(X)+entro(Y))
-
+# Link tham khao: https://math.stackexchange.com/questions/1222200/entropy-for-three-random-variables
+# H(X,Y,Z) = H(X|Y,Z) + H(Y,Z) =H(X,Y|Z) + H(Z)
 def entropyXYZ(X,Y,Z):
 	y = []
 	result = 0
@@ -99,9 +100,9 @@ def entropyXYZ(X,Y,Z):
 
 		if tongSoLanY == len(Y):
 			break
-	return result
+	return result + entroXY(Y,Z)
 def information_gainXYZ(X,Y,Z):
-	return -(entro(X)+entro(Y)+entro(Z)) + entroXY(X,Y) + entroXY(X,Z) + entroXY(Y,Z) - entropyXYZ(X,Y,Z)
+	return entro(X) + entro(Y) + entro(Z) - entropyXYZ(X,Y,Z)
 def symmetrical_uncertainlyXYZ(X,Y,Z):
 	return 3.0*information_gainXYZ(X,Y,Z)/(entro(X)+entro(Y) + entro(Z))
 
@@ -110,7 +111,7 @@ def symmetrical_uncertainlyXYZ(X,Y,Z):
 # colnames=['cpu_rate','mem_usage','disk_io_time','disk_space']
 colnames = ['cpu_rate','mem_usage','disk_io_time','disk_space']
 # df = read_csv('data/Fuzzy_data_resource_JobId_6336594489_5minutes.csv', header=None, index_col=False, names=colnames)
-df = read_csv('data/2_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', header=None, index_col=False, names=colnames)
+df = read_csv('data/5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', header=None, index_col=False, names=colnames)
 
 cpu_rate = df['cpu_rate'].values
 mem_usage = df['mem_usage'].values
@@ -120,25 +121,30 @@ disk_space = df['disk_space'].values
 su=[]
 # entropyGGTrace = []
 # # numberOfEntropy = 0
-print 'symmetrical_uncertainlyXYZ(cpu_rate,mem_usage,disk_space)'
-# print symmetrical_uncertainlyXYZ(cpu_rate,mem_usage,disk_space)
-
+print infomation_gain(cpu_rate,mem_usage)
+print infomation_gain(mem_usage,cpu_rate)
 print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
 print information_gainXYZ(cpu_rate,mem_usage,disk_space)
+print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
+print information_gainXYZ(mem_usage,disk_space,cpu_rate)
+print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
+print information_gainXYZ(disk_space,cpu_rate,mem_usage)
  
+print 'symmetrical_uncertainlyXYZ(cpu_rate,mem_usage,disk_space)'
+print symmetrical_uncertainlyXYZ(cpu_rate,mem_usage,disk_space)
 
-for i in range(len(colnames)):
-	print i
-	sui=[]
-	for k in range(i+1):
-		if(k==i):
-			sui.append(1)
-		else:
-			sui.append(symmetrical_uncertainly(df[colnames[i]].values,df[colnames[k]].values))
-	for j in range(i+1, len(colnames),1):
-		sui.append(symmetrical_uncertainly(df[colnames[i]].values,df[colnames[j]].values))
-	su.append(sui)
-print su
-# su=[[1,2,3],[2,3,4]]
-dataFuzzyDf = pd.DataFrame(np.array(su))
-dataFuzzyDf.to_csv('data/su_5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', index=False, header=None)
+# for i in range(len(colnames)):
+# 	print i
+# 	sui=[]
+# 	for k in range(i+1):
+# 		if(k==i):
+# 			sui.append(1)
+# 		else:
+# 			sui.append(symmetrical_uncertainly(df[colnames[i]].values,df[colnames[k]].values))
+# 	for j in range(i+1, len(colnames),1):
+# 		sui.append(symmetrical_uncertainly(df[colnames[i]].values,df[colnames[j]].values))
+# 	su.append(sui)
+# print su
+# # su=[[1,2,3],[2,3,4]]
+# dataFuzzyDf = pd.DataFrame(np.array(su))
+# dataFuzzyDf.to_csv('data/su_5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', index=False, header=None)
