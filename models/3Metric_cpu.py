@@ -72,7 +72,7 @@ for sliding in sliding_widow:
 		print "batch_size= ", batch_size
 		# model 1 layer 4 neural
 		model = Sequential()
-		model.add(LSTM(2, activation = 'relu',input_shape=(1,3*sliding)))
+		model.add(LSTM(4, activation = 'relu',input_shape=(1,3*sliding)))
 		model.add(Dense(1, activation = 'relu'))
 
 		sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
@@ -91,7 +91,7 @@ for sliding in sliding_widow:
 		plt.xlabel('epoch')
 		plt.legend(['train', 'test'], loc='upper left')
 		# plt.show()
-		plt.savefig('lastResults/3Metric/cpu_2-1/history_sliding=%s_batchsize=%s_optimize=sgd.png'%(sliding,batch_size))
+		plt.savefig('lastResults/3Metric/cpu/history_sliding=%s_batchsize=%s_optimize=sgd.png'%(sliding,batch_size))
 		testPredict = model.predict(testX)
 
 		print len(testPredict), len(testY)
@@ -106,9 +106,9 @@ for sliding in sliding_widow:
 		print('Test Score: %.6f MAE' % (testScoreMAE))
 		
 		testDf = pd.DataFrame(np.array(testPredictInverse))
-		testDf.to_csv('lastResults/3Metric/cpu_2-1/testPredictInverse_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
+		testDf.to_csv('lastResults/3Metric/cpu/testPredictInverse_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
 		errorScore=[]
 		errorScore.append(testScoreRMSE)
 		errorScore.append(testScoreMAE)
 		errorDf = pd.DataFrame(np.array(errorScore))
-		errorDf.to_csv('lastResults/3Metric/cpu_2-1/error_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
+		errorDf.to_csv('lastResults/3Metric/cpu/error_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
