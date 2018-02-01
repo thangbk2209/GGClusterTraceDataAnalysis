@@ -34,6 +34,7 @@ def entro(X):
 		if tong_so_lan == len(X):
 			break
 	return result
+# entropy(X|Y)
 def entroXY(X,Y):
 	y = []
 	result = 0
@@ -64,43 +65,59 @@ def infomation_gain(X,Y):
 def symmetrical_uncertainly(X,Y):
 	return 2.0*infomation_gain(X,Y)/(entro(X)+entro(Y))
 # Link tham khao: https://math.stackexchange.com/questions/1222200/entropy-for-three-random-variables
-# H(X,Y,Z) = H(X|Y,Z) + H(Y,Z) =H(X,Y|Z) + H(Z)
+# H(X,Y,Z) = Tong(P(x=xi, y=yi, z=zi)log2(P(x=xi, y=yi, z=zi)))
 def entropyXYZ(X,Y,Z):
-	y = []
+	length = len(X)
+	print length
+	x = []
 	result = 0
-	tongSoLanY = 0
-	tongSoLanZ = 0
-	for i in range(len(Y)):
-		if Counter(y)[Y[i]] == 0:
-			y.append(Y[i])
-			z=[]
-			soLanY = Counter(Y)[Y[i]]
-			tongSoLanY += soLanY
-			viTriY = []
-			for j in range(len(Y)):
-				if Y[j] == Y[i]:
-					viTriY.append(j)
-			# Dem gia tri Z tuong ung voi gia tri Y
-			z = []
-			ZY = []
-			for k in range(len(viTriY)):
-				ZY.append(Z[viTriY[k]])
-			for r in range(len(ZY)):
-				if Counter(z)[ZY[r]] == 0:
-					z.append(ZY[r])
-					soLanZ = Counter(ZY)[ZY[r]]
-					PYZ = 1.0 * soLanZ / len(Y)
-					x = []
-					for t in range(len(Z)):
-						if Y[t] == Y[i]:
-							if Z[t] == ZY[r]:
-								x.append(X[t])
-								entroThanhPhan = entro(x)
-								result += PYZ * entroThanhPhan
-
-		if tongSoLanY == len(Y):
+	tongSoLanX = 0
+	for i in range(len(X)):
+		if Counter(x)[X[i]] == 0:
+			newY=[]
+			newZ=[]
+			vi_tri = []
+			soLanX = Counter(X)[X[i]]
+			tongSoLanX += soLanX
+			x.append(X[i])
+			for j in range(len(X)):
+				if X[j] == X[i]:
+					vi_tri.append(j)
+			YX = []
+			ZX = []
+			for k in range(len(vi_tri)):
+				YX.append(Y[vi_tri[k]])  #YX la mang chua cac gia tri Y tuong ung voi cac gia tri X dang xet
+				ZX.append(Z[vi_tri[k]])	 #ZX la mang chua cac gia tri Z tuong ung voi cac gia tri X dang xet
+			y = []
+			tongSoLanY = 0
+			for t in range(len(YX)):
+				if Counter(y)[YX[t]] == 0:
+					soLanY = Counter(YX)[YX[t]]
+					tongSoLanY += soLanY
+					y.append(YX[t])
+					vi_triYX=[]
+					for m in range(len(YX)):
+						if YX[m] == YX[t]:
+							vi_triYX.append(m)
+					ZYX = []
+					for n in range(len(vi_triYX)):
+						ZYX.append(ZX[vi_triYX[n]])
+					z=[]
+					tongSoLanZ = 0
+					for p in range(len(ZYX)):
+						if Counter(z)[ZYX[p]] == 0:
+							soLanZ = Counter(ZYX)[ZYX[p]]
+							z.append(ZYX[p])
+							tongSoLanZ += soLanZ
+							P = 1.0* soLanZ / length
+							result -= P * math.log(P,2)
+						if tongSoLanZ == len(ZYX):
+							break
+				if tongSoLanY == len(YX):
+					break
+		if tongSoLanX == length:
 			break
-	return result + entroXY(Y,Z)
+	return result
 def information_gainXYZ(X,Y,Z):
 	return entro(X) + entro(Y) + entro(Z) - entropyXYZ(X,Y,Z)
 def symmetrical_uncertainlyXYZ(X,Y,Z):
@@ -121,30 +138,29 @@ disk_space = df['disk_space'].values
 su=[]
 # entropyGGTrace = []
 # # numberOfEntropy = 0
-print infomation_gain(cpu_rate,mem_usage)
-print infomation_gain(mem_usage,cpu_rate)
-print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
-print information_gainXYZ(cpu_rate,mem_usage,disk_space)
-print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
-print information_gainXYZ(mem_usage,disk_space,cpu_rate)
-print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
-print information_gainXYZ(disk_space,cpu_rate,mem_usage)
+# print infomation_gain(cpu_rate,mem_usage)
+# print infomation_gain(mem_usage,cpu_rate)
+# print 2.0 * math.log(0.002,2)
+# print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
+# print information_gainXYZ(cpu_rate,mem_usage,disk_space)
+# print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
+# print information_gainXYZ(mem_usage,disk_space,cpu_rate)
+# print 'information_gainXYZ(cpu_rate,mem_usage,disk_space)'
+# print information_gainXYZ(disk_space,cpu_rate,mem_usage)
  
 print 'symmetrical_uncertainlyXYZ(cpu_rate,mem_usage,disk_space)'
 print symmetrical_uncertainlyXYZ(cpu_rate,mem_usage,disk_space)
-
-# for i in range(len(colnames)):
-# 	print i
-# 	sui=[]
-# 	for k in range(i+1):
-# 		if(k==i):
-# 			sui.append(1)
-# 		else:
-# 			sui.append(symmetrical_uncertainly(df[colnames[i]].values,df[colnames[k]].values))
-# 	for j in range(i+1, len(colnames),1):
-# 		sui.append(symmetrical_uncertainly(df[colnames[i]].values,df[colnames[j]].values))
-# 	su.append(sui)
-# print su
-# # su=[[1,2,3],[2,3,4]]
+IG = []
+for i in range(len(colnames)-2):
+	print i
+	IGi=[]
+	for k in range(i+1, len(colnames)-1):
+		print k
+		for j in range(k+1,len(colnames)):
+			print j
+			IG.append(information_gainXYZ(df[colnames[i]].values,df[colnames[k]].values,df[colnames[j]].values))
+		
+print IG
+# su=[[1,2,3],[2,3,4]]
 # dataFuzzyDf = pd.DataFrame(np.array(su))
 # dataFuzzyDf.to_csv('data/su_5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', index=False, header=None)

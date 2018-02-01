@@ -34,6 +34,7 @@ def entro(X):
 		if tong_so_lan == len(X):
 			break
 	return result
+# entropy(X|Y)
 def entroXY(X,Y):
 	y = []
 	result = 0
@@ -81,7 +82,7 @@ disk_space = df['disk_space'].values
 su=[]
 # entropyGGTrace = []
 # # numberOfEntropy = 0
-print symmetrical_uncertainly(cpu_rate,mem_usage)
+print infomation_gain(cpu_rate,mem_usage)
 
 
 for i in range(len(colnames)):
@@ -91,11 +92,11 @@ for i in range(len(colnames)):
 		if(k==i):
 			sui.append(1)
 		else:
-			sui.append(symmetrical_uncertainly(df[colnames[i]].values,df[colnames[k]].values))
+			sui.append(infomation_gain(df[colnames[i]].values,df[colnames[k]].values))
 	for j in range(i+1, len(colnames),1):
-		sui.append(symmetrical_uncertainly(df[colnames[i]].values,df[colnames[j]].values))
+		sui.append(infomation_gain(df[colnames[i]].values,df[colnames[j]].values))
 	su.append(sui)
 print su
 # su=[[1,2,3],[2,3,4]]
 dataFuzzyDf = pd.DataFrame(np.array(su))
-dataFuzzyDf.to_csv('data/su_5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', index=False, header=None)
+dataFuzzyDf.to_csv('data/IG_5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', index=False, header=None)
