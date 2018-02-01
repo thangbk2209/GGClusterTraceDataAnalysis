@@ -91,7 +91,7 @@ for sliding in sliding_widow:
 		plt.xlabel('epoch')
 		plt.legend(['train', 'test'], loc='upper left')
 		# plt.show()
-		plt.savefig('lastResults/3Metric/mem_32-4-1/history_sliding=%s_batchsize=%s_optimize=sgd.png'%(sliding,batch_size))
+		plt.savefig('lastResults/3Metric/mem/history_sliding=%s_batchsize=%s_optimize=sgd.png'%(sliding,batch_size))
 		testPredict = model.predict(testX)
 
 		print len(testPredict), len(testY)
@@ -106,9 +106,9 @@ for sliding in sliding_widow:
 		print('Test Score: %.6f MAE' % (testScoreMAE))
 		
 		testDf = pd.DataFrame(np.array(testPredictInverse))
-		testDf.to_csv('lastResults/3Metric/mem_32-4-1/testPredictInverse_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
+		testDf.to_csv('lastResults/3Metric/mem/testPredictInverse_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
 		errorScore=[]
 		errorScore.append(testScoreRMSE)
 		errorScore.append(testScoreMAE)
 		errorDf = pd.DataFrame(np.array(errorScore))
-		errorDf.to_csv('lastResults/3Metric/mem_32-4-1/error_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
+		errorDf.to_csv('lastResults/3Metric/mem/error_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
