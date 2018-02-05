@@ -72,7 +72,7 @@ for sliding in sliding_widow:
 		print "batch_size= ", batch_size
 		# model 1 layer 4 neural
 		model = Sequential()
-		model.add(LSTM(4, activation = 'relu',input_shape=(1,3*sliding)))
+		model.add(LSTM(4, activation = 'relu',input_shape=(3*sliding,1)))
 		model.add(Dense(1, activation = 'relu'))
 
 		sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
