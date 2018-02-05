@@ -63,8 +63,8 @@ for sliding in sliding_widow:
 
 	# reshape input to be [samples, time steps, features]
 
-	trainX = np.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
-	testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
+	trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1],1))
+	testX = np.reshape(testX, (testX.shape[0], testX.shape[1],1))
 	print 'trainX reshape'
 	print trainX
 	for batch_size in batch_size_array: 
