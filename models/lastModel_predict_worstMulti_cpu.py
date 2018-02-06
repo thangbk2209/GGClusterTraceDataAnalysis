@@ -34,7 +34,7 @@ disk_io_time_nomal = scaler.fit_transform(disk_io_time)
 CPU_nomal = scaler.fit_transform(CPU)
 
 # create and fit the LSTM network
-sliding_widow = [4]
+sliding_widow = [2,3,4,5]
 # split into train and test sets
 for sliding in sliding_widow:
 	print "sliding", sliding
@@ -44,7 +44,6 @@ for sliding in sliding_widow:
 		datai=[]
 		for j in range(sliding):
 			datai.append(CPU_nomal[i+j])
-		for j in range(sliding):
 			datai.append(disk_io_time_nomal[i+j])
 		data.append(datai)
 	data = np.array(data)
@@ -61,8 +60,8 @@ for sliding in sliding_widow:
 
 	# reshape input to be [samples, time steps, features]
 
-	trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1], 1))
-	testX = np.reshape(testX, (testX.shape[0], testX.shape[1], 1))
+	trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1]/2, 2))
+	testX = np.reshape(testX, (testX.shape[0], testX.shape[1]/2, 2))
 	print 'trainX reshape'
 	print trainX
 	for batch_size in batch_size_array: 
@@ -70,12 +69,12 @@ for sliding in sliding_widow:
 		print "batch_size= ", batch_size
 		# model 1 layer 4 neural
 		model = Sequential()
-		model.add(LSTM(4, activation = 'relu',input_shape=(2*sliding, 1)))
+		model.add(LSTM(4, activation = 'relu',input_shape=(sliding, 2)))
 		model.add(Dense(1, activation = 'relu'))
 
-		sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-		model.compile(loss='mean_squared_error' ,optimizer = sgd , metrics=['mean_squared_error'])
-		history = model.fit(trainX, trainY, epochs=2500, batch_size=batch_size, verbose=2,validation_split=0.25,
+		# sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+		model.compile(loss='mean_squared_error' ,optimizer = 'SGD' , metrics=['mean_squared_error'])
+		history = model.fit(trainX, trainY, epochs=5000, batch_size=batch_size, verbose=2,validation_split=0.25,
 			callbacks=[EarlyStopping(monitor='loss', patience=20, verbose=1)])
 		# make predictions
 		# list all data in history

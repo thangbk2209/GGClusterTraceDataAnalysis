@@ -32,9 +32,9 @@ CPU = df['cpu_rate'].values
 
 RAM_nomal = scaler.fit_transform(RAM)
 CPU_nomal = scaler.fit_transform(CPU)
-
+print CPU_nomal
 # create and fit the LSTM network
-sliding_widow = [2,3,4,5]
+sliding_widow = [3,4,5]
 # split into train and test sets
 for sliding in sliding_widow:
 	print "sliding", sliding
@@ -44,7 +44,6 @@ for sliding in sliding_widow:
 		datai=[]
 		for j in range(sliding):
 			datai.append(CPU_nomal[i+j])
-		for j in range(sliding):
 			datai.append(RAM_nomal[i+j])
 		data.append(datai)
 	data = np.array(data)
@@ -61,8 +60,8 @@ for sliding in sliding_widow:
 
 	# reshape input to be [samples, time steps, features]
 
-	trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1], 1))
-	testX = np.reshape(testX, (testX.shape[0], testX.shape[1], 1))
+	trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1]/2, 2))
+	testX = np.reshape(testX, (testX.shape[0], testX.shape[1]/2, 2))
 	print 'trainX reshape'
 	print trainX
 	for batch_size in batch_size_array: 
@@ -70,11 +69,11 @@ for sliding in sliding_widow:
 		print "batch_size= ", batch_size
 		# model 1 layer 4 neural
 		model = Sequential()
-		model.add(LSTM(4, activation = 'relu',input_shape=(2*sliding, 1)))
+		model.add(LSTM(4, activation = 'relu',input_shape=(sliding, 2)))
 		model.add(Dense(1, activation = 'relu'))
 
-		sgd = optimizers.SGD(lr=0.0001, decay=1e-6, momentum=0.9, nesterov=True)
-		model.compile(loss='mean_squared_error' ,optimizer = sgd , metrics=['mean_squared_error'])
+		# sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+		model.compile(loss='mean_squared_error' ,optimizer = 'SGD' , metrics=['mean_squared_error'])
 		history = model.fit(trainX, trainY, epochs=2500, batch_size=batch_size, verbose=2,validation_split=0.25,
 			callbacks=[EarlyStopping(monitor='loss', patience=20, verbose=1)])
 		# make predictions
@@ -89,7 +88,7 @@ for sliding in sliding_widow:
 		plt.xlabel('epoch')
 		plt.legend(['train', 'test'], loc='upper left')
 		# plt.show()
-		plt.savefig('lastResults/best_multivariate/cpuFuzzy/history_sliding=%s_batchsize=%s_optimize=sgd.png'%(sliding,batch_size))
+		plt.savefig('lastResults/best_multivariate/cpuFuzzy_timesteps=2/history_sliding=%s_batchsize=%s_optimize=sgd.png'%(sliding,batch_size))
 		testPredict = model.predict(testX)
 
 		print len(testPredict), len(testY)
@@ -104,9 +103,9 @@ for sliding in sliding_widow:
 		print('Test Score: %.6f MAE' % (testScoreMAE))
 		
 		testDf = pd.DataFrame(np.array(testPredictInverse))
-		testDf.to_csv('lastResults/best_multivariate/cpuFuzzy/testPredictInverse_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
+		testDf.to_csv('lastResults/best_multivariate/cpuFuzzy_timesteps=2/testPredictInverse_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
 		errorScore=[]
 		errorScore.append(testScoreRMSE)
 		errorScore.append(testScoreMAE)
 		errorDf = pd.DataFrame(np.array(errorScore))
-		errorDf.to_csv('lastResults/best_multivariate/cpuFuzzy/error_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
+		errorDf.to_csv('lastResults/best_multivariate/cpuFuzzy_timesteps=2/error_sliding=%s_batchsize=%s_optimize=sgd.csv'%(sliding,batch_size), index=False, header=None)
