@@ -60,8 +60,8 @@ for sliding in sliding_widow:
 
 	# reshape input to be [samples, time steps, features]
 
-	trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1]/2, 2))
-	testX = np.reshape(testX, (testX.shape[0], testX.shape[1]/2, 2))
+	trainX = np.reshape(trainX, (trainX.shape[0],1 , trainX.shape[1]))
+	testX = np.reshape(testX, (testX.shape[0],1 , testX.shape[1]))
 	print 'trainX reshape'
 	print trainX
 	for batch_size in batch_size_array: 
@@ -69,7 +69,7 @@ for sliding in sliding_widow:
 		print "batch_size= ", batch_size
 		# model 1 layer 4 neural
 		model = Sequential()
-		model.add(LSTM(4, activation = 'relu',input_shape=(sliding, 2)))
+		model.add(LSTM(4, activation = 'relu',input_shape=(1, 2*sliding)))
 		model.add(Dense(1, activation = 'relu'))
 
 		# sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)

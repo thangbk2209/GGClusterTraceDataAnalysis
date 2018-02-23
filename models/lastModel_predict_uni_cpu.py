@@ -21,7 +21,7 @@ def create_dataset(dataset, look_back=1):
 		dataX.append(a)
 		dataY.append(dataset[i + look_back, 0])
 	return np.array(dataX), np.array(dataY)
-sliding_window=[2]
+sliding_window=[3,4]
 # load the dataset
 # dataframe = read_csv('/home/nguyen/LSTM_GoogleTraceData/data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv', usecols=[0], engine='python', skipfooter=3)
 dataframe = read_csv('./data/5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv', usecols=[0], engine='python')
@@ -47,8 +47,8 @@ for sliding in sliding_window:
 		testX, testY = create_dataset(test, look_back)
 		testY = scaler.inverse_transform([testY])
 		# reshape input to be [samples, time steps, features]
-		trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1], 1))
-		testX = np.reshape(testX, (testX.shape[0], testX.shape[1], 1))
+		trainX = np.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
+		testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
 		print 'train X,testX'
 		print trainX
 		print testX
@@ -57,11 +57,11 @@ for sliding in sliding_window:
 
 		# model 1 layer 4 neural
 		model = Sequential()
-		model.add(LSTM(4, activation = 'relu',input_shape=(sliding, 1)))
+		model.add(LSTM(4, activation = 'relu',input_shape=(1, sliding)))
 		model.add(Dense(1, activation = 'relu'))
 
-		sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-		model.compile(loss='mean_squared_error', optimizer = sgd )
+		# sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+		model.compile(loss='mean_squared_error', optimizer = 'SGD' )
 		
 		history = model.fit(trainX, trainY, epochs=10000, batch_size=batch_size, verbose=2,validation_split=0.25,
 		 							callbacks=[EarlyStopping(monitor='loss', patience=20, verbose=1)])
