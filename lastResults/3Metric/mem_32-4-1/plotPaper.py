@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd 
 from pandas import read_csv
@@ -8,9 +9,11 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 colnames = ['cpu','mem','disk_io_time','disk_space'] 
 # colnames = ['cpu','mem','disk_io_time','disk_space'] 
 batch_size_array = [8,16,32,64,128]
-realFile = ['/home/nguyen/GGTraceAnalysis/data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv']
-
-sliding_widow = [2,3,4,5]
+realFile = ['/home/nguyenthang/HustLearn/Lab/GGClusterTraceDataAnalysis/data/Fuzzy_data_sampling_617685_metric_10min_datetime_origin.csv']
+font = {'family' : 'normal',
+        'size'   : 15}
+matplotlib.rc('font', **font)
+sliding_widow = [2]
 optimizerArr=['sgd']
 for sliding in sliding_widow:
 	for batch_size in batch_size_array:
@@ -50,12 +53,13 @@ for sliding in sliding_widow:
 			ax.plot(realTestData,label="Actual")
 			ax.plot(resultData,label="predictions")
 			# ax.plrot(TestPred,label="Test")
-			plt.xlabel("TimeStamp")
-			plt.ylabel("Memory")
+			plt.xlabel("TimeStamp", fontsize = 15)
+			plt.ylabel("Memory", fontsize = 15)
+			plt.title("Multivariate with %s = 0.45"%(u'\u03B4'))
 			# ax.text(0,0, '%s_testScore-sliding=%s-batch_size=%s_optimise=%s: %s RMSE- %s MAE'%(modelName, sliding,batch_size,optimize, RMSE,MAE), style='italic',
 			#         bbox={'facecolor':'red', 'alpha':0.5, 'pad':8})
 			plt.legend()
-			plt.savefig('sliding=%s_batchsize=%s_optimize=%s.pdf'%(sliding,batch_size, optimize))
+			plt.savefig('3metrics_mem_sliding=%s_batchsize=%s_optimize=%s.pdf'%(sliding,batch_size, optimize))
 			plt.show()
 
 

@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd 
 from pandas import read_csv
@@ -7,10 +8,12 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 # df = read_csv('/home/nguyen/learnRNNs/international-airline-passengers.csv', usecols=[1], engine='python', skipfooter=3)
 colnames = ['cpu','mem','disk_io_time','disk_space'] 
 # colnames = ['cpu','mem','disk_io_time','disk_space'] 
-batch_size_array = [8,16,32,64,128]
-realFile = ['/home/nguyen/GGTraceAnalysis/data/5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv']
+batch_size_array = [128]
+realFile = ['/home/nguyenthang/HustLearn/Lab/GGClusterTraceDataAnalysis/data/5_Fuzzy_Mem_sampling_617685_metric_10min_datetime_origin.csv']
 folderArr = ["model1"]
-
+font = {'family' : 'normal',
+        'size'   : 15}
+matplotlib.rc('font', **font)
 sliding_widow = [2]
 for folderName in folderArr: 
 	for sliding in sliding_widow:
@@ -49,11 +52,12 @@ for folderName in folderArr:
 			ax.plot(realTestData,label="Actual")
 			ax.plot(resultData,label="predictions")
 			# ax.plrot(TestPred,label="Test")
-			plt.xlabel("TimeStamp")
-			plt.ylabel("CPU")
+			plt.xlabel("TimeStamp", fontsize = 15)
+			plt.ylabel("CPU", fontsize = 15)
+			plt.title("Univariate")
 			# ax.text(0,0, '%s_testScore-sliding=%s-batch_size=%s_optimise=adam: %s RMSE- %s MAE'%(folderName, sliding,batch_size, RMSE,MAE), style='italic',
 			#         bbox={'facecolor':'red', 'alpha':0.5, 'pad':8})
 			plt.legend()
-			plt.savefig('sliding=%s_batchsize=%s_optimize=adam.pdf'%(sliding,batch_size))
+			plt.savefig('uni_sliding=%s_batchsize=%s_optimize=adam.pdf'%(sliding,batch_size))
 			plt.show()
 
